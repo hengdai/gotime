@@ -70,6 +70,12 @@ func (t *GoTime) FCurrDefault() string {
 
 // 按照给定的格式化当前时间，例如：y-m-d h:i:s
 func (t *GoTime) FCorrByRule(rule string) string {
+	ret := formatTime(time.Now(), rule)
+	return ret
+}
+
+// 统一格式化方法
+func formatTime(timeNow time.Time, rule string) string {
 	var year SingleFormat
 	var month SingleFormat
 	var day SingleFormat
@@ -77,7 +83,6 @@ func (t *GoTime) FCorrByRule(rule string) string {
 	var minute SingleFormat
 	var second SingleFormat
 	ruleArr := strings.Split(rule, "")
-	timeNow := time.Now()
 
 	for key, value := range rule {
 		if unicode.IsLetter(value) {
@@ -160,11 +165,18 @@ func (t *GoTime) FCorrByRule(rule string) string {
 		ret += secondStr + second.Suffix
 	}
 
-
 	return ret
 }
 
-// 传入时间并格式化成rule格式
-func FTimestampsByRule(t time.Time, rule string) string {
+// 传入时间类型并格式化成rule格式
+func FByRule(t time.Time, rule string) string {
+	ret := formatTime(t, rule)
+	return ret
+}
 
+// 传入秒级别的时间戳，转换成rule格式
+func FTimestampsByRule(timestamps int64, rule string) string {
+	t := time.Unix(timestamps, 0)
+	ret := formatTime(t, rule)
+	return ret
 }
