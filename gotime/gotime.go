@@ -12,35 +12,35 @@ type GoTime struct {
 }
 
 type SingleFormat struct {
-	Len int `json:"len"`
+	Len    int    `json:"len"`
 	Suffix string `json:"suffix"`
-	Index int `json:"index"`
+	Index  int    `json:"index"`
 }
 
 var monthIntMap = map[string]string{
-	"January": "01",
-	"February": "02",
-	"March": "03",
-	"April": "04",
-	"May": "05",
-	"June": "06",
-	"July": "07",
-	"August": "08",
+	"January":   "01",
+	"February":  "02",
+	"March":     "03",
+	"April":     "04",
+	"May":       "05",
+	"June":      "06",
+	"July":      "07",
+	"August":    "08",
 	"September": "09",
-	"October": "10",
-	"November": "11",
-	"December": "12",
+	"October":   "10",
+	"November":  "11",
+	"December":  "12",
 }
 
 // 时区默认是Asia/Shanghai
-func NewGoTime(v interface{}) *GoTime  {
+func NewGoTime(v interface{}) *GoTime {
 	var gt GoTime
 	if v, ok := v.(string); ok {
 		gt.Location, _ = time.LoadLocation(v)
 	} else {
 		panic("please use string type for NewGoTime func")
 	}
-	return  &gt
+	return &gt
 }
 
 // 返回秒级别时间戳
@@ -106,17 +106,17 @@ func formatTime(timeNow time.Time, rule string) string {
 				second.Index = key
 			}
 		} else {
-			if key - year.Index == 1 {
+			if key-year.Index == 1 {
 				year.Suffix = ruleArr[key]
-			} else if  key - month.Index == 1 {
+			} else if key-month.Index == 1 {
 				month.Suffix = ruleArr[key]
-			} else if  key - day.Index == 1 {
+			} else if key-day.Index == 1 {
 				day.Suffix = ruleArr[key]
-			} else if  key - hour.Index == 1 {
+			} else if key-hour.Index == 1 {
 				hour.Suffix = ruleArr[key]
-			} else if  key - minute.Index == 1 {
+			} else if key-minute.Index == 1 {
 				minute.Suffix = ruleArr[key]
-			} else if  key - second.Index == 1 {
+			} else if key-second.Index == 1 {
 				second.Suffix = ruleArr[key]
 			}
 		}
