@@ -180,3 +180,13 @@ func FTimestampsByRule(timestamps int64, rule string) string {
 	ret := formatTime(t, rule)
 	return ret
 }
+
+// 计算出给定时间
+func Shift()  {
+
+}
+
+// 时间sleep给定的几秒钟
+func Sleep(second int)  {
+	time.Sleep(time.Duration(second) * time.Second)
+}

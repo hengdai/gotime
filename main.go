@@ -6,7 +6,8 @@ import (
 )
 
 func main()  {
-	//gt := gotime.NewGoTime("Asia/Shanghai")
-	//logs.Info(gt.FCorrByRule("y.m.d h.i.s"))
-	logs.Info(gotime.FTimestampsByRule(1573304084, "y-m-d h:i:s"))
+	gt := gotime.NewGoTime("Asia/Shanghai")
+	logs.Info(gt.FCurrDefault())
+	gotime.Sleep(3)
+	logs.Info(gt.FCurrDefault())
 }
