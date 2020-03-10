@@ -187,6 +187,6 @@ func Shift()  {
 }
 
 // 时间sleep给定的几秒钟
-func Sleep(second int)  {
+func Sleep(second int) {
 	time.Sleep(time.Duration(second) * time.Second)
 }
