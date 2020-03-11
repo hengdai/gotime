@@ -7,11 +7,11 @@ import (
 	"unicode"
 )
 
-type GoTime struct {
+type goTime struct {
 	Location *time.Location `json:"location"`
 }
 
-type SingleFormat struct {
+type singleFormat struct {
 	Len    int    `json:"len"`
 	Suffix string `json:"suffix"`
 	Index  int    `json:"index"`
@@ -33,9 +33,12 @@ var monthIntMap = map[string]string{
 }
 
 // 时区默认是Asia/Shanghai
-func NewGoTime(v interface{}) *GoTime {
-	var gt GoTime
+func NewGoTime(v interface{}) *goTime {
+	var gt goTime
 	if v, ok := v.(string); ok {
+		if v == "" {
+			v = "Asia/Shanghai"
+		}
 		gt.Location, _ = time.LoadLocation(v)
 	} else {
 		panic("please use string type for NewGoTime func")
@@ -44,19 +47,19 @@ func NewGoTime(v interface{}) *GoTime {
 }
 
 // 返回秒级别时间戳
-func (t *GoTime) Timestamps() int64 {
+func (t *goTime) Timestamps() int64 {
 	timestamps := time.Now().In(t.Location)
 	return timestamps.Unix()
 }
 
 // 返回纳秒时间
-func (t *GoTime) Nanosecond() int {
+func (t *goTime) Nanosecond() int {
 	timestamps := time.Now().In(t.Location)
 	return timestamps.Nanosecond()
 }
 
 // 返回秒加纳秒的时间戳
-func (t *GoTime) TimestampsWithNano() string {
+func (t *goTime) TimestampsWithNano() string {
 	timestamps := t.Timestamps()
 	nanosecond := t.Nanosecond()
 	timestampsWithNano := strconv.FormatInt(timestamps, 10) + "." + strconv.Itoa(nanosecond)
@@ -64,24 +67,24 @@ func (t *GoTime) TimestampsWithNano() string {
 }
 
 // 格式化当前时间，默认的format格式是YYYY-MM-DD HH:MM:SS
-func (t *GoTime) FCurrDefault() string {
+func (t *goTime) FCurrDefault() string {
 	return time.Now().In(t.Location).Format("2006-01-02 15:04:05")
 }
 
 // 按照给定的格式化当前时间，例如：y-m-d h:i:s
-func (t *GoTime) FCorrByRule(rule string) string {
+func (t *goTime) FCorrByRule(rule string) string {
 	ret := formatTime(time.Now(), rule)
 	return ret
 }
 
 // 统一格式化方法
 func formatTime(timeNow time.Time, rule string) string {
-	var year SingleFormat
-	var month SingleFormat
-	var day SingleFormat
-	var hour SingleFormat
-	var minute SingleFormat
-	var second SingleFormat
+	var year singleFormat
+	var month singleFormat
+	var day singleFormat
+	var hour singleFormat
+	var minute singleFormat
+	var second singleFormat
 	ruleArr := strings.Split(rule, "")
 
 	for key, value := range rule {
@@ -169,24 +172,54 @@ func formatTime(timeNow time.Time, rule string) string {
 }
 
 // 传入时间类型并格式化成rule格式
-func FByRule(t time.Time, rule string) string {
-	ret := formatTime(t, rule)
+func (t *goTime) FByRule(ts time.Time, rule string) string {
+	ret := formatTime(ts, rule)
 	return ret
 }
 
 // 传入秒级别的时间戳，转换成rule格式
-func FTimestampsByRule(timestamps int64, rule string) string {
-	t := time.Unix(timestamps, 0)
-	ret := formatTime(t, rule)
+func (t *goTime) FTimestampsByRule(timestamps int64, rule string) string {
+	ts := time.Unix(timestamps, 0)
+	ret := formatTime(ts, rule)
 	return ret
 }
 
-// 计算出给定时间
-func Shift()  {
+// 计算出给定时间相加时间之后的时间,并按照给定格式返回;
+// 支持的时间单位: seconds,minutes,hours,days,months,years
+func (t *goTime) Shift(ts time.Time, timeUnit string, rule string) string {
+	fTime := ""
+	if strings.Contains(timeUnit, "seconds") {
+		splitArr := strings.Split(timeUnit, "seconds")
+		num, _ := strconv.Atoi(splitArr[0])
+		fTime = formatTime(ts.Add(time.Duration(num) * time.Second), rule)
+	} else if strings.Contains(timeUnit, "minutes") {
+		splitArr := strings.Split(timeUnit, "minutes")
+		num, _ := strconv.Atoi(splitArr[0])
+		fTime = formatTime(ts.Add(time.Duration(num) * time.Minute), rule)
+	} else if strings.Contains(timeUnit, "hours") {
+		splitArr := strings.Split(timeUnit, "hours")
+		num, _ := strconv.Atoi(splitArr[0])
+		fTime = formatTime(ts.Add(time.Duration(num) * time.Hour), rule)
+	} else if strings.Contains(timeUnit, "days") {
+		splitArr := strings.Split(timeUnit, "days")
+		num, _ := strconv.Atoi(splitArr[0])
+		fTime = formatTime(ts.AddDate(0, 0, num), rule)
+	} else if strings.Contains(timeUnit, "months") {
+		splitArr := strings.Split(timeUnit, "months")
+		num, _ := strconv.Atoi(splitArr[0])
+		fTime = formatTime(ts.AddDate(0, num, 0), rule)
+	} else if strings.Contains(timeUnit, "years") {
+		splitArr := strings.Split(timeUnit, "years")
+		num, _ := strconv.Atoi(splitArr[0])
+		fTime = formatTime(ts.AddDate(num, 0, 0), rule)
+	} else {
+		panic("invalid time unit")
+	}
 
+	return fTime
 }
 
 // 时间sleep给定的几秒钟
-func Sleep(second int) {
+func (t *goTime) Sleep(second int) {
 	time.Sleep(time.Duration(second) * time.Second)
 }

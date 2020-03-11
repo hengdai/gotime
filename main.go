@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"gotime/gotime"
+	"time"
 )
 
 func main()  {
-	gt := gotime.NewGoTime("Asia/Shanghai")
-	gotime.Sleep(3)
-	fmt.Println(gt.FCurrDefault())
+	gt := gotime.NewGoTime("")
+	t := time.Now()
+	res := gt.Shift(t, "5years", "y-m-d h:i:s")
+	fmt.Println(res)
 }
