@@ -73,7 +73,7 @@ func (t *goTime) FCurrDefault() string {
 
 // 按照给定的格式化当前时间，例如：y-m-d h:i:s
 func (t *goTime) FCorrByRule(rule string) string {
-	ret := formatTime(time.Now(), rule)
+	ret := formatTime(time.Now().In(t.Location), rule)
 	return ret
 }
 
@@ -173,13 +173,14 @@ func formatTime(timeNow time.Time, rule string) string {
 
 // 传入时间类型并格式化成rule格式
 func (t *goTime) FByRule(ts time.Time, rule string) string {
+	ts = ts.In(t.Location)
 	ret := formatTime(ts, rule)
 	return ret
 }
 
 // 传入秒级别的时间戳，转换成rule格式
 func (t *goTime) FTimestampsByRule(timestamps int64, rule string) string {
-	ts := time.Unix(timestamps, 0)
+	ts := time.Unix(timestamps, 0).In(t.Location)
 	ret := formatTime(ts, rule)
 	return ret
 }
@@ -188,6 +189,7 @@ func (t *goTime) FTimestampsByRule(timestamps int64, rule string) string {
 // 支持的时间单位: seconds,minutes,hours,days,months,years
 func (t *goTime) Shift(ts time.Time, timeUnit string, rule string) string {
 	fTime := ""
+	ts = ts.In(t.Location)
 	if strings.Contains(timeUnit, "seconds") {
 		splitArr := strings.Split(timeUnit, "seconds")
 		num, _ := strconv.Atoi(splitArr[0])
