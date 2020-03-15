@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"gotime/gotime"
-	"time"
 )
 
 func main()  {
 	gt := gotime.NewGoTime("")
-	t := time.Now()
-	res := gt.Shift(t, "5years", "y-m-d h:i:s")
-	fmt.Println(res)
+	timeStampsStr := gt.RTimestamps("2020-03-16 18:57:43")
+	fmt.Println(timeStampsStr)
+	fStr := gt.FTimestampsByRule(timeStampsStr, "y-m-d h:i:s")
+	fmt.Println(fStr)
 }

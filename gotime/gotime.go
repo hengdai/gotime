@@ -46,24 +46,34 @@ func NewGoTime(v interface{}) *goTime {
 	return &gt
 }
 
-// 返回秒级别时间戳
+// 返回当前秒级别时间戳
 func (t *goTime) Timestamps() int64 {
 	timestamps := time.Now().In(t.Location)
 	return timestamps.Unix()
 }
 
-// 返回纳秒时间
+// 返回当前纳秒时间
 func (t *goTime) Nanosecond() int {
 	timestamps := time.Now().In(t.Location)
 	return timestamps.Nanosecond()
 }
 
-// 返回秒加纳秒的时间戳
+// 返回当前秒加纳秒的时间戳
 func (t *goTime) TimestampsWithNano() string {
 	timestamps := t.Timestamps()
 	nanosecond := t.Nanosecond()
 	timestampsWithNano := strconv.FormatInt(timestamps, 10) + "." + strconv.Itoa(nanosecond)
 	return timestampsWithNano
+}
+
+// 将时间字符串转换为时间戳
+func (t *goTime) RTimestamps(fTime string) int64 {
+	ft, err := time.ParseInLocation("2006-01-02 15:04:05", fTime, t.Location)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return ft.Unix()
 }
 
 // 格式化当前时间，默认的format格式是YYYY-MM-DD HH:MM:SS
@@ -193,15 +203,15 @@ func (t *goTime) Shift(ts time.Time, timeUnit string, rule string) string {
 	if strings.Contains(timeUnit, "seconds") {
 		splitArr := strings.Split(timeUnit, "seconds")
 		num, _ := strconv.Atoi(splitArr[0])
-		fTime = formatTime(ts.Add(time.Duration(num) * time.Second), rule)
+		fTime = formatTime(ts.Add(time.Duration(num)*time.Second), rule)
 	} else if strings.Contains(timeUnit, "minutes") {
 		splitArr := strings.Split(timeUnit, "minutes")
 		num, _ := strconv.Atoi(splitArr[0])
-		fTime = formatTime(ts.Add(time.Duration(num) * time.Minute), rule)
+		fTime = formatTime(ts.Add(time.Duration(num)*time.Minute), rule)
 	} else if strings.Contains(timeUnit, "hours") {
 		splitArr := strings.Split(timeUnit, "hours")
 		num, _ := strconv.Atoi(splitArr[0])
-		fTime = formatTime(ts.Add(time.Duration(num) * time.Hour), rule)
+		fTime = formatTime(ts.Add(time.Duration(num)*time.Hour), rule)
 	} else if strings.Contains(timeUnit, "days") {
 		splitArr := strings.Split(timeUnit, "days")
 		num, _ := strconv.Atoi(splitArr[0])
