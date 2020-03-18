@@ -6,9 +6,9 @@ import (
 )
 
 func main()  {
+	// 入参为时区，传入空字符串默认为 Asia/Shanghai
 	gt := gotime.NewGoTime("")
-	timeStampsStr := gt.RTimestamps("2020-03-16 18:57:43")
-	fmt.Println(timeStampsStr)
-	fStr := gt.FTimestampsByRule(timeStampsStr, "y-m-d h:i:s")
-	fmt.Println(fStr)
+	// 返回当前时间戳
+	timestamps := gt.Timestamps()
+	fmt.Println(timestamps)
 }
