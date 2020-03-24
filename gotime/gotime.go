@@ -39,7 +39,11 @@ func NewGoTime(v interface{}) *goTime {
 		if v == "" {
 			v = "Asia/Shanghai"
 		}
-		gt.Location, _ = time.LoadLocation(v)
+		l, err := time.LoadLocation(v)
+		if nil != err {
+			l = time.FixedZone("CST", 8*3600)
+		}
+		gt.Location = l
 	} else {
 		panic("please use string type for NewGoTime func")
 	}
