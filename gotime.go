@@ -80,6 +80,16 @@ func (t *goTime) RTimestamps(fTime string) int64 {
 	return ft.Unix()
 }
 
+// 将奇怪的时间字符串，按照规定的格式解析转换为时间戳，例如：2006-01-02T15:04:05+08:00
+func (t *goTime) RTimestampsByRule(fTime string, rule string) int64 {
+	ft, err := time.ParseInLocation(rule, fTime, t.Location)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return ft.Unix()
+}
+
 // 格式化当前时间，默认的format格式是YYYY-MM-DD HH:MM:SS
 func (t *goTime) FCurrDefault() string {
 	return time.Now().In(t.Location).Format("2006-01-02 15:04:05")
